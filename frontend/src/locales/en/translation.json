@@ -1,0 +1,94 @@
+{
+    "nav": {
+        "home": "Home",
+        "services": "Services",
+        "admin": "Admin Login",
+        "tagline": "Elevating Your Applications Beyond Limits"
+    },
+    "hero": {
+        "title": "Digital Seva",
+        "subtitle": "Apply Smarter. Faster. Effortlessly.",
+        "cta": "Explore Services"
+    },
+    "posts": {
+        "title": "Latest Notifications",
+        "subtitle": "Stay updated with the latest job and service opportunities",
+        "active": "Active",
+        "expired": "Expired",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "viewDetails": "View Details",
+        "noPosts": "No posts available. Check back soon!",
+        "loading": "Loading..."
+    },
+    "detail": {
+        "requiredDocs": "Required Documents",
+        "extraInfo": "Additional Information",
+        "applyNow": "Apply Now",
+        "timeLeft": "Time Remaining",
+        "days": "Days",
+        "hours": "Hours",
+        "mins": "Mins",
+        "secs": "Secs",
+        "expired": "Application Closed"
+    },
+    "operator": {
+        "title": "Contact Our Operator",
+        "description": "Contact the operator below and they will take care of your application from start to finish.",
+        "whatsapp": "WhatsApp",
+        "call": "Call Now",
+        "email": "Email",
+        "address": "Address",
+        "age": "Age"
+    },
+    "admin": {
+        "login": "Admin Login",
+        "username": "Username",
+        "password": "Password",
+        "loginBtn": "Sign In",
+        "dashboard": "Dashboard",
+        "addPost": "Add Post",
+        "editPost": "Edit Post",
+        "deletePost": "Delete Post",
+        "manageOperator": "Manage Operator",
+        "logout": "Logout",
+        "posts": "Posts",
+        "titleEn": "Title (English)",
+        "titleTe": "Title (Telugu)",
+        "imageUrl": "Image URL",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "docsEn": "Required Documents (English)",
+        "docsTe": "Required Documents (Telugu)",
+        "extraInfoEn": "Extra Info (English)",
+        "extraInfoTe": "Extra Info (Telugu)",
+        "category": "Category",
+        "save": "Save Post",
+        "update": "Update Post",
+        "cancel": "Cancel",
+        "addDoc": "Add Document",
+        "name": "Name",
+        "phone": "Phone",
+        "email": "Email",
+        "address": "Address",
+        "photoUrl": "Photo URL",
+        "whatsapp": "WhatsApp Number",
+        "bio": "Bio",
+        "saveOperator": "Save Operator",
+        "loginError": "Invalid username or password"
+    },
+    "categories": {
+        "all": "All",
+        "job": "Job",
+        "pan": "PAN Card",
+        "aadhaar": "Aadhaar",
+        "scholarship": "Scholarship",
+        "government": "Government",
+        "private": "Private",
+        "other": "Other"
+    },
+    "footer": {
+        "rights": "© 2026 Digital Seva. All rights reserved.",
+        "tagline": "Elevating Your Applications Beyond Limits"
+    }
+}
