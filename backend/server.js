@@ -9,6 +9,12 @@ const operatorRoutes = require('./routes/operator');
 
 connectDB();
 
+console.log('--- Environment Check ---');
+console.log('PORT:', process.env.PORT);
+console.log('FRONTEND_URL:', process.env.FRONTEND_URL);
+console.log('MONGO_URI exists:', !!process.env.MONGO_URI);
+console.log('-------------------------');
+
 const app = express();
 
 const allowedOrigins = [
@@ -19,17 +25,17 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps/postman)
         if (!origin) return callback(null, true);
 
-        console.log(`Incoming request from origin: ${origin}`);
-        console.log(`Allowed origins: ${allowedOrigins.join(', ')}`);
+        // Normalize URLs by removing trailing slashes for comparison
+        const normalizedOrigin = origin.replace(/\/$/, "");
+        const normalizedAllowed = allowedOrigins.map(url => url.replace(/\/$/, ""));
 
-        if (allowedOrigins.indexOf(origin) !== -1) {
+        if (normalizedAllowed.includes(normalizedOrigin)) {
             callback(null, true);
         } else {
-            console.error(`❌ CORS Blocked: Origin "${origin}" is not in allowedOrigins`);
-            callback(new Error('Not allowed by CORS'));
+            console.error(`❌ CORS Blocked: Origin "${normalizedOrigin}" not in [${normalizedAllowed.join(', ')}]`);
+            callback(null, false); // Don't throw error, just block
         }
     },
     credentials: true
