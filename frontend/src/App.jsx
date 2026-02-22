@@ -13,8 +13,11 @@ import PostDetailPage from './pages/PostDetailPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 
+import { useTranslation } from 'react-i18next';
+
 const PublicLayout = ({ darkMode, toggleDarkMode }) => {
-    const securityMessage = "🛡️ Cyber Security Alert: DigitalSeva never asks for unauthorized OTPs or bank details. Be careful with cyber frauds! Stay safe! • DigitalSeva never calls for personal sensitive info • Keep your OTPs private • Report suspicious links";
+    const { t } = useTranslation();
+    const securityMessage = t('securityMessage');
 
     return (
         <>
