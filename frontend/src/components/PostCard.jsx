@@ -61,9 +61,18 @@ const PostCard = ({ post, delay = 0 }) => {
                 </div>
 
                 {/* CTA */}
-                <Link to={`/post/${post._id}`} className="btn-view">
-                    {t('posts.viewDetails')} <FiChevronRight style={{ marginLeft: 4 }} />
-                </Link>
+                <div className="d-flex gap-2 flex-wrap">
+                    <Link to={`/post/${post._id}`} className="btn-view flex-grow-1">
+                        {t('posts.viewDetails')} <FiChevronRight style={{ marginLeft: 4 }} />
+                    </Link>
+                    {post.notificationUrl && (
+                        <a href={post.notificationUrl} target="_blank" rel="noopener noreferrer"
+                            className="btn-edit-ag d-flex align-items-center justify-content-center p-2"
+                            onClick={(e) => e.stopPropagation()} title="Open Notification Link">
+                            🔗
+                        </a>
+                    )}
+                </div>
             </div>
         </div>
     );

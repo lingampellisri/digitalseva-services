@@ -102,8 +102,8 @@ const PostDetailPage = () => {
                             )}
 
                             {/* Title card */}
-                            <div className="detail-card mb-4">
-                                <div className="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3">
+                            <div className="detail-card mb-4 text-center">
+                                <div className="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3 text-start">
                                     <h1 style={{ fontSize: 'clamp(1.3rem, 3vw, 1.9rem)', fontWeight: 800, lineHeight: 1.3 }}>
                                         {title}
                                     </h1>
@@ -113,7 +113,7 @@ const PostDetailPage = () => {
                                     }
                                 </div>
 
-                                <div className="row g-3">
+                                <div className="row g-3 mb-4">
                                     <div className="col-6">
                                         <div style={{ padding: '12px 16px', background: 'rgba(0,180,216,0.07)', borderRadius: 10, border: '1px solid rgba(0,180,216,0.15)' }}>
                                             <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
@@ -131,6 +131,14 @@ const PostDetailPage = () => {
                                         </div>
                                     </div>
                                 </div>
+
+                                {post.notificationUrl && (
+                                    <a href={post.notificationUrl} target="_blank" rel="noopener noreferrer"
+                                        className="btn-primary-ag w-100 py-3 shadow-lg d-flex align-items-center justify-content-center gap-2"
+                                        style={{ borderRadius: 12, fontSize: '1.05rem', textDecoration: 'none' }}>
+                                        🌐 Click Here for Official Notification
+                                    </a>
+                                )}
                             </div>
 
                             {/* Countdown timer */}

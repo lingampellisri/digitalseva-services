@@ -14,8 +14,18 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 
 const PublicLayout = ({ darkMode, toggleDarkMode }) => {
+    const securityMessage = "🛡️ Cyber Security Alert: DigitalSeva never asks for unauthorized OTPs or bank details. Be careful with cyber frauds! Stay safe! • DigitalSeva never calls for personal sensitive info • Keep your OTPs private • Report suspicious links";
+
     return (
         <>
+            <div className="security-banner">
+                <div className="marquee-container">
+                    <div className="marquee-content">
+                        <span>{securityMessage}</span>
+                        <span>{securityMessage}</span>
+                    </div>
+                </div>
+            </div>
             <Navbar darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
             <Outlet />
         </>

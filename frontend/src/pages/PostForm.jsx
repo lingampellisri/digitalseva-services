@@ -13,6 +13,7 @@ const emptyForm = () => ({
     requiredDocsTe: [''],
     extraInfoEn: '', extraInfoTe: '',
     category: 'other',
+    notificationUrl: '',
 });
 
 const convertDriveLink = (url) => {
@@ -135,7 +136,7 @@ const PostForm = ({ post, onSuccess, onCancel }) => {
                     </div>
 
                     {/* Image URL */}
-                    <div className="col-12 col-md-8">
+                    <div className="col-12 col-md-6">
                         <div className="form-group-ag">
                             <label className="form-label-ag">{t('admin.imageUrl')}</label>
                             <input type="url" className={inputCls}
@@ -146,6 +147,17 @@ const PostForm = ({ post, onSuccess, onCancel }) => {
                                     handleField('imageUrl', converted);
                                 }}
                                 placeholder="https://example.com/image.jpg or Google Drive Link" />
+                        </div>
+                    </div>
+
+                    {/* Notification Link */}
+                    <div className="col-12 col-md-6">
+                        <div className="form-group-ag">
+                            <label className="form-label-ag">Notification Link (Official/More Info)</label>
+                            <input type="url" className={inputCls}
+                                value={form.notificationUrl}
+                                onChange={e => handleField('notificationUrl', e.target.value)}
+                                placeholder="https://example.com/notification-details" />
                         </div>
                     </div>
 
