@@ -1320,3 +1320,43 @@ body {
   background: var(--bg-white);
   border-color: rgba(255, 255, 255, 0.06);
 }
+
+/* ===== SCROLLING SECURITY BANNER ===== */
+.security-banner {
+  background: linear-gradient(90deg, #ef4444 0%, #7c3aed 50%, #00b4d8 100%);
+  color: white;
+  padding: 8px 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  overflow: hidden;
+  position: relative;
+  z-index: 1001;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+}
+
+.marquee-container {
+  display: flex;
+  white-space: nowrap;
+  animation: marquee 40s linear infinite;
+}
+
+.marquee-content {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.security-banner:hover .marquee-container {
+  animation-play-state: paused;
+}

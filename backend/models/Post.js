@@ -14,7 +14,8 @@ const PostSchema = new mongoose.Schema({
         type: String,
         enum: ['job', 'pan', 'aadhaar', 'scholarship', 'government', 'private', 'other'],
         default: 'other'
-    }
+    },
+    notificationUrl: { type: String, default: '' }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Post', PostSchema);

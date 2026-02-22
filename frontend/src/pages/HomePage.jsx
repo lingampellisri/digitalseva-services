@@ -14,6 +14,7 @@ const HomePage = () => {
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('all');
     const [search, setSearch] = useState('');
+    const [view, setView] = useState('all'); // 'all' or 'active'
 
     useEffect(() => {
         fetchPosts();
@@ -31,11 +32,15 @@ const HomePage = () => {
         }
     };
 
+    const sortedPosts = [...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+    const whatsNew = sortedPosts.slice(0, 4);
+
     const filtered = posts.filter(p => {
         const matchCat = activeCategory === 'all' || p.category === activeCategory;
         const matchSearch = p.titleEn.toLowerCase().includes(search.toLowerCase()) ||
             (p.titleTe || '').includes(search);
-        return matchCat && matchSearch;
+        const matchView = view === 'all' || new Date(p.endDate) > new Date();
+        return matchCat && matchSearch && matchView;
     });
 
     return (
@@ -51,9 +56,26 @@ const HomePage = () => {
                         <p className="section-subtitle mt-2">{t('posts.subtitle')}</p>
                     </div>
 
-                    {/* Search */}
-                    <div className="d-flex justify-content-center mb-4">
-                        <div style={{ position: 'relative', maxWidth: 440, width: '100%' }}>
+                    {/* What's New Section */}
+                    {whatsNew.length > 0 && !search && activeCategory === 'all' && (
+                        <div className="mb-5">
+                            <h4 className="mb-3 d-flex align-items-center gap-2" style={{ fontWeight: 700 }}>
+                                🆕 What's New
+                            </h4>
+                            <div className="row g-3">
+                                {whatsNew.map((post, i) => (
+                                    <div key={`new-${post._id}`} className="col-12 col-sm-6 col-md-3">
+                                        <PostCard post={post} delay={i * 0.1} />
+                                    </div>
+                                ))}
+                            </div>
+                            <div className="section-line mt-5 mb-5 opacity-25" />
+                        </div>
+                    )}
+
+                    {/* Search and Tabs */}
+                    <div className="d-flex flex-column align-items-center mb-4">
+                        <div style={{ position: 'relative', maxWidth: 440, width: '100%', marginBottom: 20 }}>
                             <FiSearch style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
                             <input
                                 type="text"
@@ -63,6 +85,23 @@ const HomePage = () => {
                                 className="form-control-ag"
                                 style={{ paddingLeft: 42, width: '100%' }}
                             />
+                        </div>
+
+                        <div className="d-flex gap-2 p-1 bg-white rounded-pill shadow-sm mb-2" style={{ border: '1px solid #eee' }}>
+                            <button
+                                className={`btn-category m-0 py-2 px-4 rounded-pill ${view === 'all' ? 'active shadow-sm' : ''}`}
+                                onClick={() => setView('all')}
+                                style={{ borderRadius: '50px' }}
+                            >
+                                All Notifications
+                            </button>
+                            <button
+                                className={`btn-category m-0 py-2 px-4 rounded-pill ${view === 'active' ? 'active shadow-sm' : ''}`}
+                                onClick={() => setView('active')}
+                                style={{ borderRadius: '50px' }}
+                            >
+                                🔥 Active Only
+                            </button>
                         </div>
                     </div>
 
