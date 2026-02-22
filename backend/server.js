@@ -27,15 +27,19 @@ app.use(cors({
     origin: (origin, callback) => {
         if (!origin) return callback(null, true);
 
-        // Normalize URLs by removing trailing slashes for comparison
-        const normalizedOrigin = origin.replace(/\/$/, "");
-        const normalizedAllowed = allowedOrigins.map(url => url.replace(/\/$/, ""));
+        // Normalize URLs: Trim whitespace and remove trailing slashes
+        const normalizedOrigin = origin.trim().replace(/\/$/, "");
+        const normalizedAllowed = allowedOrigins.map(url => url.trim().replace(/\/$/, ""));
+
+        console.log(`CORS Check: Origin "${normalizedOrigin}" against [${normalizedAllowed.join(', ')}]`);
 
         if (normalizedAllowed.includes(normalizedOrigin)) {
             callback(null, true);
         } else {
-            console.error(`❌ CORS Blocked: Origin "${normalizedOrigin}" not in [${normalizedAllowed.join(', ')}]`);
-            callback(null, false); // Don't throw error, just block
+            console.error(`❌ CORS BLOCKED!`);
+            console.error(`Incoming: "${normalizedOrigin}"`);
+            console.error(`Allowed:  "${normalizedAllowed.join('", "')}"`);
+            callback(null, false);
         }
     },
     credentials: true
