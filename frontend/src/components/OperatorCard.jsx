@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { FiPhone, FiMail, FiMapPin, FiUser } from 'react-icons/fi';
-import { FaWhatsapp } from 'react-icons/fa';
+import { FaWhatsapp, FaUsers } from 'react-icons/fa';
 
 const OperatorCard = ({ operator }) => {
     const { t } = useTranslation();
@@ -99,6 +99,38 @@ const OperatorCard = ({ operator }) => {
                             <FiPhone />
                             {t('operator.call')}
                         </a>
+                    </div>
+
+                    {/* WhatsApp Group Link */}
+                    <div className="mt-4 pt-4 border-top">
+                        <a
+                            href="https://chat.whatsapp.com/FZEX4SFVBbL8iDlpQcchbJ?mode=gi_t"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-whatsapp w-100 justify-content-center py-2"
+                            style={{ background: 'linear-gradient(135deg, #25ba61, #075e54)' }}
+                        >
+                            <FaUsers size={20} />
+                            {t('operator.joinGroup')}
+                        </a>
+                    </div>
+
+                    {/* Promotional Attraction Points */}
+                    <div className="promo-attraction-box mt-4 p-3 rounded" style={{ background: 'linear-gradient(135deg, rgba(0, 180, 216, 0.08), rgba(124, 58, 237, 0.08))', borderLeft: '4px solid var(--accent-blue)' }}>
+                        <div className="d-flex flex-column gap-3">
+                            <div style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-dark)' }}>
+                                {t('operator.promoHome')}
+                            </div>
+                            <div style={{ fontSize: '0.88rem', fontWeight: 500, color: 'var(--text-muted)' }}>
+                                {t('operator.promoTravel')}
+                            </div>
+                            <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--accent-violet)' }}>
+                                {t('operator.promoFast')}
+                            </div>
+                            <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#16a34a' }}>
+                                {t('operator.promoPay')}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

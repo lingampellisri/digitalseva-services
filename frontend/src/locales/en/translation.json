@@ -39,7 +39,12 @@
         "call": "Call Now",
         "email": "Email",
         "address": "Address",
-        "age": "Age"
+        "age": "Age",
+        "joinGroup": "Join WhatsApp Group",
+        "promoHome": "🏠 Contact us from home – We can apply the application 100% secure.",
+        "promoTravel": "⏳ Cost of travelling and waiting in online shops is eliminated.",
+        "promoFast": "⚡ Apply fast!",
+        "promoPay": "✅ After successful completion of the application, pay the fee."
     },
     "admin": {
         "login": "Admin Login",
