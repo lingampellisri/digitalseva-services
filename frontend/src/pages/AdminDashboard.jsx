@@ -24,7 +24,7 @@ const AdminDashboard = () => {
     const [view, setView] = useState(VIEWS.DASHBOARD);
     const [posts, setPosts] = useState([]);
     const [editPost, setEditPost] = useState(null);
-    const [operator, setOperator] = useState(null);
+    const [operators, setOperators] = useState([]);
     const [loading, setLoading] = useState(true);
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
@@ -33,9 +33,9 @@ const AdminDashboard = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [p, o] = await Promise.all([API.get('/posts'), API.get('/operator')]);
+            const [p, o] = await Promise.all([API.get('/posts'), API.get('/operators/all')]);
             setPosts(p.data);
-            setOperator(o.data);
+            setOperators(Array.isArray(o.data) ? o.data : []);
         } catch (e) { console.error(e); }
         finally { setLoading(false); }
     };
@@ -117,7 +117,7 @@ const AdminDashboard = () => {
                                     { icon: '📋', label: 'Total Posts', value: posts.length, color: '#00b4d8' },
                                     { icon: '✅', label: 'Active Posts', value: activePosts, color: '#22c55e' },
                                     { icon: '⌛', label: 'Expired Posts', value: posts.length - activePosts, color: '#f59e0b' },
-                                    { icon: '👤', label: 'Operators', value: operator?.name ? 1 : 0, color: '#a78bfa' },
+                                    { icon: '👤', label: 'Operators', value: operators.length, color: '#a78bfa' },
                                 ].map(s => (
                                     <div key={s.label} className="col-6 col-md-3">
                                         <div className="stat-card">
@@ -223,8 +223,8 @@ const AdminDashboard = () => {
 
                     {view === VIEWS.MANAGE_OPERATOR && (
                         <ManageOperator
-                            existing={operator}
-                            onSuccess={(op) => { setOperator(op); }}
+                            operators={operators}
+                            onRefresh={fetchData}
                         />
                     )}
                 </div>

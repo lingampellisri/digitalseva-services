@@ -49,7 +49,7 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
-app.use('/api/operator', operatorRoutes);
+app.use('/api/operators', operatorRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'ANTIGRAVITY API running' }));

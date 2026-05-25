@@ -8,7 +8,9 @@ const OperatorSchema = new mongoose.Schema({
     address: { type: String },
     photoUrl: { type: String, default: '' },
     whatsapp: { type: String },
-    bio: { type: String, default: '' }
+    bio: { type: String, default: '' },
+    isActive: { type: Boolean, default: true },
+    sortOrder: { type: Number, default: 0 }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Operator', OperatorSchema);

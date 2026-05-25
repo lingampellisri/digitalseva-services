@@ -23,7 +23,7 @@ const PostDetailPage = () => {
     const { t, i18n } = useTranslation();
     const lang = i18n.language;
     const [post, setPost] = useState(null);
-    const [operator, setOperator] = useState(null);
+    const [operators, setOperators] = useState([]);
     const [loading, setLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState(null);
 
@@ -45,10 +45,10 @@ const PostDetailPage = () => {
             setLoading(true);
             const [postRes, opRes] = await Promise.all([
                 API.get(`/posts/${id}`),
-                API.get('/operator')
+                API.get('/operators')
             ]);
             setPost(postRes.data);
-            setOperator(opRes.data);
+            setOperators(Array.isArray(opRes.data) ? opRes.data : []);
         } catch (err) {
             console.error(err);
         } finally {
@@ -200,7 +200,14 @@ const PostDetailPage = () => {
                         {/* Sidebar */}
                         <div className="col-12 col-lg-4">
                             <div style={{ position: 'sticky', top: 80 }}>
-                                <OperatorCard operator={operator} />
+                                {operators.map(op => (
+                                    <OperatorCard key={op._id} operator={op} />
+                                ))}
+                                {operators.length === 0 && (
+                                    <div className="detail-card" style={{ textAlign: 'center', padding: 24, color: 'var(--text-muted)' }}>
+                                        No operators available at this time.
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
