@@ -33,18 +33,24 @@
         "expired": "Application Closed"
     },
     "operator": {
-        "title": "Contact Our Operator",
-        "description": "Contact the operator below and they will take care of your application from start to finish.",
+        "title": "Your Service Expert",
+        "description": "Our verified expert will handle your entire application process from start to finish.",
         "whatsapp": "WhatsApp",
         "call": "Call Now",
         "email": "Email",
         "address": "Address",
         "age": "Age",
         "joinGroup": "Join WhatsApp Group",
-        "promoHome": "🏠 Contact us from home – We can apply the application 100% secure.",
-        "promoTravel": "⏳ Cost of travelling and waiting in online shops is eliminated.",
-        "promoFast": "⚡ Apply fast!",
-        "promoPay": "✅ After successful completion of the application, pay the fee."
+        "verified": "Verified Expert",
+        "experience": "Professional Service",
+        "getHelp": "Get Help Now",
+        "serviceGuarantee": "Service Guarantee",
+        "guaranteeText": "100% application handling with full transparency. Pay only after successful completion.",
+        "whyChooseUs": "Why Choose Our Service?",
+        "promoHome": "🏠 Apply from home – 100% secure & verified process",
+        "promoTravel": "🚫 No travel or waiting – Save time & money",
+        "promoFast": "⚡ Fast-track processing – Priority handling",
+        "promoPay": "✅ Pay after completion – Zero risk guarantee"
     },
     "admin": {
         "login": "Admin Login",
@@ -79,6 +85,7 @@
         "address": "Address",
         "photoUrl": "Photo URL",
         "whatsapp": "WhatsApp Number",
+        "whatsappGroupLink": "WhatsApp Group Link",
         "bio": "Bio",
         "saveOperator": "Save Operator",
         "addOperator": "Add Operator",

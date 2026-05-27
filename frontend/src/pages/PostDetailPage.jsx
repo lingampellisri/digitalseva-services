@@ -4,7 +4,17 @@ import { useTranslation } from 'react-i18next';
 import OperatorCard from '../components/OperatorCard';
 import Footer from '../components/Footer';
 import API from '../api/client';
-import { FiCalendar, FiArrowLeft, FiCheckCircle } from 'react-icons/fi';
+import { FiCalendar, FiArrowLeft, FiClock, FiExternalLink } from 'react-icons/fi';
+
+const CATEGORY_META = {
+    job: { emoji: '💼', color: '#3b82f6' },
+    pan: { emoji: '🪪', color: '#f59e0b' },
+    aadhaar: { emoji: '🆔', color: '#8b5cf6' },
+    scholarship: { emoji: '🎓', color: '#10b981' },
+    government: { emoji: '🏛️', color: '#6366f1' },
+    private: { emoji: '🏢', color: '#ec4899' },
+    other: { emoji: '📋', color: '#64748b' }
+};
 
 const isActive = (endDate) => new Date(endDate) > new Date();
 
@@ -23,7 +33,7 @@ const PostDetailPage = () => {
     const { t, i18n } = useTranslation();
     const lang = i18n.language;
     const [post, setPost] = useState(null);
-    const [operators, setOperators] = useState([]);
+    const [operator, setOperator] = useState(null);
     const [loading, setLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState(null);
 
@@ -48,7 +58,9 @@ const PostDetailPage = () => {
                 API.get('/operators')
             ]);
             setPost(postRes.data);
-            setOperators(Array.isArray(opRes.data) ? opRes.data : []);
+            const ops = Array.isArray(opRes.data) ? opRes.data : [];
+            // Use the first active operator (sorted by sortOrder from backend)
+            setOperator(ops.length > 0 ? ops[0] : null);
         } catch (err) {
             console.error(err);
         } finally {
@@ -74,79 +86,61 @@ const PostDetailPage = () => {
     const extraInfo = lang === 'te' && post.extraInfoTe ? post.extraInfoTe : post.extraInfoEn;
     const active = isActive(post.endDate);
     const fmt = (d) => new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+    const catMeta = CATEGORY_META[post.category] || CATEGORY_META.other;
 
     return (
         <>
-            <div style={{ background: 'var(--bg-light)', minHeight: '100vh', paddingBottom: 60 }}>
-                <div className="container" style={{ paddingTop: 40 }}>
-                    {/* Back button */}
-                    <Link to="/" className="d-inline-flex align-items-center gap-2 mb-4 text-decoration-none"
-                        style={{ color: 'var(--accent-blue)', fontWeight: 600, fontSize: '0.9rem' }}>
-                        <FiArrowLeft /> Back to Notifications
-                    </Link>
+            <div className="detail-page">
+                {/* Hero Banner */}
+                <div className="detail-hero">
+                    <div className="detail-hero-overlay" />
+                    {post.imageUrl && !post.imageUrl.includes('/preview') && (
+                        <img src={post.imageUrl} alt={title} className="detail-hero-bg" />
+                    )}
+                    <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+                        <Link to="/" className="detail-back-btn">
+                            <FiArrowLeft size={18} />
+                            <span>Back to Notifications</span>
+                        </Link>
+                        <div className="detail-hero-content">
+                            <div className="detail-category-badge" style={{ '--cat-color': catMeta.color }}>
+                                <span>{catMeta.emoji}</span>
+                                <span>{t(`categories.${post.category || 'other'}`)}</span>
+                            </div>
+                            <h1 className="detail-hero-title">{title}</h1>
+                            <div className="detail-hero-meta">
+                                <div className="detail-meta-item">
+                                    <FiCalendar size={16} />
+                                    <span>{fmt(post.startDate)} — {fmt(post.endDate)}</span>
+                                </div>
+                                {active
+                                    ? <span className="badge-active">● {t('posts.active')}</span>
+                                    : <span className="badge-expired">✕ {t('posts.expired')}</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                {/* Main Content */}
+                <div className="container" style={{ paddingTop: 40, paddingBottom: 60 }}>
                     <div className="row g-4">
-                        {/* Main content */}
+                        {/* Left Column - Post Details */}
                         <div className="col-12 col-lg-8">
-                            {/* Banner image */}
-                            {post.imageUrl ? (
-                                post.imageUrl.includes('/preview') ? (
-                                    <iframe src={post.imageUrl} className="post-detail-banner mb-4" style={{ border: 'none' }} title={title} />
-                                ) : (
-                                    <img src={post.imageUrl} alt={title} className="post-detail-banner mb-4" />
-                                )
-                            ) : (
-                                <div className="post-detail-banner-placeholder mb-4">
-                                    <span>📋</span>
+                            {/* Image/Document Preview */}
+                            {post.imageUrl && post.imageUrl.includes('/preview') && (
+                                <div className="detail-card mb-4">
+                                    <iframe src={post.imageUrl} className="detail-doc-preview" title={title} style={{ border: 'none' }} />
                                 </div>
                             )}
 
-                            {/* Title card */}
-                            <div className="detail-card mb-4 text-center">
-                                <div className="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3 text-start">
-                                    <h1 style={{ fontSize: 'clamp(1.3rem, 3vw, 1.9rem)', fontWeight: 800, lineHeight: 1.3 }}>
-                                        {title}
-                                    </h1>
-                                    {active
-                                        ? <span className="badge-active">● {t('posts.active')}</span>
-                                        : <span className="badge-expired">✕ {t('posts.expired')}</span>
-                                    }
-                                </div>
-
-                                <div className="row g-3 mb-4">
-                                    <div className="col-6">
-                                        <div style={{ padding: '12px 16px', background: 'rgba(0,180,216,0.07)', borderRadius: 10, border: '1px solid rgba(0,180,216,0.15)' }}>
-                                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
-                                                {t('posts.startDate')}
-                                            </div>
-                                            <div style={{ fontWeight: 700, color: 'var(--text-dark)' }}>{fmt(post.startDate)}</div>
-                                        </div>
-                                    </div>
-                                    <div className="col-6">
-                                        <div style={{ padding: '12px 16px', background: active ? 'rgba(239,68,68,0.07)' : 'rgba(100,116,139,0.07)', borderRadius: 10, border: `1px solid ${active ? 'rgba(239,68,68,0.15)' : 'rgba(100,116,139,0.15)'}` }}>
-                                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
-                                                {t('posts.endDate')}
-                                            </div>
-                                            <div style={{ fontWeight: 700, color: 'var(--text-dark)' }}>{fmt(post.endDate)}</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {post.notificationUrl && (
-                                    <a href={post.notificationUrl} target="_blank" rel="noopener noreferrer"
-                                        className="btn-primary-ag w-100 py-3 shadow-lg d-flex align-items-center justify-content-center gap-2"
-                                        style={{ borderRadius: 12, fontSize: '1.05rem', textDecoration: 'none' }}>
-                                        🌐 Click Here for Official Notification
-                                    </a>
-                                )}
-                            </div>
-
-                            {/* Countdown timer */}
+                            {/* Countdown Timer */}
                             {active && timeLeft ? (
                                 <div className="countdown-box mb-4">
                                     <div style={{ width: '100%', textAlign: 'center', marginBottom: 16 }}>
-                                        <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>
-                                            ⏳ {t('detail.timeLeft')}
+                                        <span className="countdown-header">
+                                            <FiClock size={16} />
+                                            {t('detail.timeLeft')}
                                         </span>
                                     </div>
                                     {[
@@ -162,50 +156,94 @@ const PostDetailPage = () => {
                                     ))}
                                 </div>
                             ) : !active ? (
-                                <div className="alert-ag alert-error mb-4" style={{ textAlign: 'center', padding: '16px' }}>
-                                    🚫 {t('detail.expired')}
+                                <div className="detail-expired-banner mb-4">
+                                    <span className="expired-icon">🚫</span>
+                                    <div>
+                                        <strong>{t('detail.expired')}</strong>
+                                        <p>This notification's deadline has passed on {fmt(post.endDate)}</p>
+                                    </div>
                                 </div>
                             ) : null}
 
-                            {/* Required docs */}
+                            {/* Official Notification Link */}
+                            {post.notificationUrl && (
+                                <a href={post.notificationUrl} target="_blank" rel="noopener noreferrer"
+                                    className="detail-official-link mb-4">
+                                    <div className="official-link-content">
+                                        <FiExternalLink size={22} />
+                                        <div>
+                                            <strong>Official Notification</strong>
+                                            <span>Click to view the official document</span>
+                                        </div>
+                                    </div>
+                                    <span className="official-link-arrow">→</span>
+                                </a>
+                            )}
+
+                            {/* Date Details Card */}
+                            <div className="detail-card mb-4">
+                                <div className="detail-dates-grid">
+                                    <div className="detail-date-box detail-date-start">
+                                        <FiCalendar size={20} />
+                                        <div>
+                                            <span className="date-label">{t('posts.startDate')}</span>
+                                            <span className="date-value">{fmt(post.startDate)}</span>
+                                        </div>
+                                    </div>
+                                    <div className="detail-date-divider">
+                                        <span>→</span>
+                                    </div>
+                                    <div className={`detail-date-box ${active ? 'detail-date-end-active' : 'detail-date-end-expired'}`}>
+                                        <FiCalendar size={20} />
+                                        <div>
+                                            <span className="date-label">{t('posts.endDate')}</span>
+                                            <span className="date-value">{fmt(post.endDate)}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Required Documents */}
                             {docs && docs.length > 0 && (
                                 <div className="detail-card mb-4">
-                                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 16, color: 'var(--text-dark)' }}>
-                                        📄 {t('detail.requiredDocs')}
+                                    <h3 className="detail-section-title">
+                                        <span className="section-icon">📄</span>
+                                        {t('detail.requiredDocs')}
                                     </h3>
-                                    <ul className="docs-list">
+                                    <div className="detail-docs-grid">
                                         {docs.map((doc, i) => (
-                                            <li key={i}>
-                                                <FiCheckCircle className="doc-icon" />
+                                            <div key={i} className="detail-doc-item">
+                                                <div className="doc-number">{i + 1}</div>
                                                 <span>{doc}</span>
-                                            </li>
+                                            </div>
                                         ))}
-                                    </ul>
+                                    </div>
                                 </div>
                             )}
 
-                            {/* Extra info */}
+                            {/* Extra Info */}
                             {extraInfo && (
                                 <div className="detail-card">
-                                    <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: 12, color: 'var(--text-dark)' }}>
-                                        ℹ️ {t('detail.extraInfo')}
+                                    <h3 className="detail-section-title">
+                                        <span className="section-icon">ℹ️</span>
+                                        {t('detail.extraInfo')}
                                     </h3>
-                                    <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: '0.95rem', whiteSpace: 'pre-wrap' }}>
+                                    <div className="detail-extra-info">
                                         {extraInfo}
-                                    </p>
+                                    </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* Sidebar */}
+                        {/* Right Column - Operator */}
                         <div className="col-12 col-lg-4">
-                            <div style={{ position: 'sticky', top: 80 }}>
-                                {operators.map(op => (
-                                    <OperatorCard key={op._id} operator={op} />
-                                ))}
-                                {operators.length === 0 && (
-                                    <div className="detail-card" style={{ textAlign: 'center', padding: 24, color: 'var(--text-muted)' }}>
-                                        No operators available at this time.
+                            <div className="detail-sidebar">
+                                {operator ? (
+                                    <OperatorCard operator={operator} />
+                                ) : (
+                                    <div className="detail-card" style={{ textAlign: 'center', padding: 32 }}>
+                                        <div style={{ fontSize: '3rem', marginBottom: 12, opacity: 0.3 }}>👤</div>
+                                        <p style={{ color: 'var(--text-muted)' }}>No operators available at this time.</p>
                                     </div>
                                 )}
                             </div>

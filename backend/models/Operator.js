@@ -8,6 +8,7 @@ const OperatorSchema = new mongoose.Schema({
     address: { type: String },
     photoUrl: { type: String, default: '' },
     whatsapp: { type: String },
+    whatsappGroupLink: { type: String, default: '' },
     bio: { type: String, default: '' },
     isActive: { type: Boolean, default: true },
     sortOrder: { type: Number, default: 0 }
