@@ -8,7 +8,13 @@
     "hero": {
         "title": "Digital Seva",
         "subtitle": "Apply Smarter. Faster. Effortlessly.",
-        "cta": "Explore Services"
+        "cta": "Explore Services",
+        "searchPlaceholder": "Search PAN, Aadhaar, Jobs, Scholarships...",
+        "subheadline": "PAN, Aadhaar, Jobs, Scholarships, Government Forms — All accepted here",
+        "statProcessed": "Processed",
+        "statPosts": "Job Posts",
+        "statSupport": "Support",
+        "statFree": "Free to Browse"
     },
     "posts": {
         "title": "Latest Notifications",
@@ -113,6 +119,60 @@
     "footer": {
         "rights": "© 2026 Digital Seva. All rights reserved.",
         "tagline": "Elevating Your Applications Beyond Limits"
+    },
+    "floatingWa": {
+        "groupTitle": "Join Our Group",
+        "groupDesc": "Get latest updates & messages",
+        "chatTitle": "Chat with Us",
+        "chatDesc": "Direct message on WhatsApp"
+    },
+    "trustBadges": {
+        "privacyTitle": "Data Privacy",
+        "privacySub": "Your data is 100% secure",
+        "payAfterTitle": "Pay After Success",
+        "payAfterSub": "Zero risk guarantee",
+        "verifiedTitle": "Verified Experts",
+        "verifiedSub": "Certified professionals",
+        "supportTitle": "24/7 Support",
+        "supportSub": "Always here to help"
+    },
+    "liveCounter": {
+        "liveLabel": "Live Dashboard",
+        "processed": "Applications Processed",
+        "posts": "Active Job Posts",
+        "success": "Success Rate",
+        "rating": "User Rating"
+    },
+    "whatsNew": {
+        "title": "What's New",
+        "sectionTitle": "Updates & Tools",
+        "sectionSub": "Deadlines, trending services, and latest updates",
+        "panCorrectionTitle": "PAN Correction Window",
+        "panCorrectionDesc": "Last date for free PAN correction submission",
+        "panCorrectionDate": "Jun 30",
+        "aadhaarUpdateTitle": "Aadhaar Update Drive",
+        "aadhaarUpdateDesc": "Free Aadhaar update window closing soon",
+        "aadhaarUpdateDate": "Jul 15",
+        "scholarshipTitle": "Scholarship Season Open",
+        "scholarshipDesc": "AP & TS state scholarships now accepting applications",
+        "scholarshipDate": "Open Now",
+        "govtJobTitle": "Latest Govt Jobs",
+        "govtJobDesc": "Railway, SSC & Bank recruitment notifications",
+        "govtJobDate": "Trending",
+        "urgencyHigh": "Urgent",
+        "urgencyMedium": "Closing Soon",
+        "urgencyLow": "Active"
+    },
+    "sevaCard": {
+        "badge": "Exclusive Membership",
+        "title": "Seva Family Card",
+        "desc": "Join our Seva Family for priority processing, dedicated support, and hassle-free handling of all your document & application needs.",
+        "benefit1": "🏠 Door-step service",
+        "benefit2": "⚡ Priority processing",
+        "benefit3": "📞 Dedicated support",
+        "benefit4": "🤝 Trusted community",
+        "ctaPrimary": "Join Now",
+        "ctaSecondary": "Explore Services"
     },
     "securityMessage": "🛡️ Cyber Security Alert: DigitalSeva never asks for unauthorized OTPs or bank details. Be careful with cyber frauds! Stay safe! • DigitalSeva never calls for personal sensitive info • Keep your OTPs private • Report suspicious links"
 }

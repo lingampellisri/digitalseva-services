@@ -1,9 +1,18 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router-dom';
+import { FiSearch } from 'react-icons/fi';
 
-const HeroSection = () => {
+const HeroSection = ({ onSearch }) => {
     const { t } = useTranslation();
-    const navigate = useNavigate();
+    const [searchVal, setSearchVal] = useState('');
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        if (onSearch) onSearch(searchVal);
+        document.getElementById('posts-section')?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    const quickTags = ['PAN Card', 'Aadhaar', 'Jobs', 'Scholarships', 'Passport', 'Certificates'];
 
     return (
         <section className="hero-section" id="hero">
@@ -28,42 +37,54 @@ const HeroSection = () => {
                     {/* Subtitle */}
                     <p className="hero-subtitle">{t('hero.subtitle')}</p>
 
-                    {/* Services chips */}
-                    <div className="d-flex flex-wrap gap-2 justify-content-center mb-4" style={{ animation: 'fadeInUp 1s ease forwards 0.2s', opacity: 0 }}>
-                        {['Job Notifications', 'PAN Card', 'Aadhaar', 'Scholarships', 'Government Services'].map(s => (
-                            <span key={s} style={{
-                                background: 'rgba(255,255,255,0.07)',
-                                border: '1px solid rgba(255,255,255,0.12)',
-                                color: 'rgba(255,255,255,0.75)',
-                                padding: '6px 16px',
-                                borderRadius: '50px',
-                                fontSize: '0.78rem',
-                                fontWeight: 500,
-                                backdropFilter: 'blur(10px)'
-                            }}>{s}</span>
-                        ))}
-                    </div>
+                    {/* Search Bar */}
+                    <div className="hero-search-wrapper">
+                        <form className="hero-search-bar" onSubmit={handleSearch}>
+                            <FiSearch size={20} style={{ color: 'rgba(255,255,255,0.4)', flexShrink: 0, marginRight: 12 }} />
+                            <input
+                                type="text"
+                                className="hero-search-input"
+                                placeholder={t('hero.searchPlaceholder', 'Search PAN, Aadhaar, Jobs, Scholarships...')}
+                                value={searchVal}
+                                onChange={e => setSearchVal(e.target.value)}
+                                id="hero-search-input"
+                            />
+                            <button type="submit" className="hero-search-btn" aria-label="Search">
+                                <FiSearch size={18} />
+                            </button>
+                        </form>
 
-                    {/* CTA */}
-                    <div style={{ animation: 'fadeInUp 1s ease forwards 0.4s', opacity: 0 }}>
-                        <button
-                            className="btn-hero"
-                            onClick={() => document.getElementById('posts-section')?.scrollIntoView({ behavior: 'smooth' })}
-                        >
-                            <span>✦ {t('hero.cta')}</span>
-                        </button>
+                        <p className="hero-subheadline">
+                            {t('hero.subheadline', 'PAN, Aadhaar, Jobs, Scholarships, Government Forms — All accepted here')}
+                        </p>
+
+                        <div className="hero-quick-tags">
+                            {quickTags.map(tag => (
+                                <button
+                                    key={tag}
+                                    className="hero-quick-tag"
+                                    onClick={() => {
+                                        setSearchVal(tag);
+                                        if (onSearch) onSearch(tag);
+                                        document.getElementById('posts-section')?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
+                                >
+                                    {tag}
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
                     {/* Stats strip */}
-                    <div className="d-flex gap-4 justify-content-center mt-5 flex-wrap" style={{ animation: 'fadeInUp 1s ease forwards 0.6s', opacity: 0 }}>
+                    <div className="d-flex gap-4 justify-content-center mt-4 flex-wrap" style={{ animation: 'fadeInUp 1s ease forwards 0.6s', opacity: 0 }}>
                         {[
-                            { n: '500+', l: 'Job Postings' },
-                            { n: '10K+', l: 'Applications' },
-                            { n: '24/7', l: 'Support' },
-                            { n: '100%', l: 'Free to Use' },
+                            { n: '1,420+', l: t('hero.statProcessed', 'Processed') },
+                            { n: '500+', l: t('hero.statPosts', 'Job Posts') },
+                            { n: '24/7', l: t('hero.statSupport', 'Support') },
+                            { n: '100%', l: t('hero.statFree', 'Free to Browse') },
                         ].map(({ n, l }) => (
                             <div key={l} style={{ textAlign: 'center' }}>
-                                <div style={{ fontSize: '1.6rem', fontWeight: 900, background: 'linear-gradient(135deg,#00b4d8,#a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{n}</div>
+                                <div style={{ fontSize: '1.6rem', fontWeight: 900, background: 'linear-gradient(135deg,#10b981,#0ea5e9)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{n}</div>
                                 <div style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', fontWeight: 500, marginTop: '2px' }}>{l}</div>
                             </div>
                         ))}

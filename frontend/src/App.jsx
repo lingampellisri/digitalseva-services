@@ -8,6 +8,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import Navbar from './components/Navbar';
+import FloatingWhatsApp from './components/FloatingWhatsApp';
 import HomePage from './pages/HomePage';
 import PostDetailPage from './pages/PostDetailPage';
 import AdminLogin from './pages/AdminLogin';
@@ -48,6 +49,7 @@ function App() {
     return (
         <AuthProvider>
             <Router>
+                <FloatingWhatsApp />
                 <Routes>
                     {/* Admin routes — no Navbar */}
                     <Route path="/admin/login" element={<AdminLogin />} />
