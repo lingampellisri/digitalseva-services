@@ -6,7 +6,7 @@ const { protect } = require('../middleware/auth');
 // @route GET /api/operators  — public (all active operators, sorted)
 router.get('/', async (req, res) => {
     try {
-        const operators = await Operator.find({ isActive: true }).sort({ sortOrder: 1, createdAt: -1 });
+        const operators = await Operator.find({ isActive: { $ne: false } }).sort({ sortOrder: 1, createdAt: -1 });
         res.json(operators);
     } catch (err) {
         res.status(500).json({ message: err.message });

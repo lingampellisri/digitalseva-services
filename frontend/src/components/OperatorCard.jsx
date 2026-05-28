@@ -1,139 +1,142 @@
 import { useTranslation } from 'react-i18next';
-import { FiPhone, FiMail, FiMapPin, FiUser } from 'react-icons/fi';
+import { FiPhone, FiMail, FiMapPin, FiUser, FiShield, FiStar } from 'react-icons/fi';
 import { FaWhatsapp, FaUsers } from 'react-icons/fa';
 
-const OperatorCard = ({ operator }) => {
+const OperatorCard = ({ operator, compact = false }) => {
     const { t } = useTranslation();
 
     if (!operator || !operator.name) return null;
 
     const initials = operator.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    const waNumber = (operator.whatsapp || operator.phone || '').replace(/\D/g, '');
 
     return (
-        <div className="operator-card mt-4">
-            <h4 className="mb-2 fw-bold" style={{ fontSize: '1.1rem' }}>
-                🎯 {t('operator.title')}
-            </h4>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '24px', lineHeight: 1.5 }}>
-                {t('operator.description')}
-            </p>
+        <div className="operator-card-v2">
+            {/* Verified Header */}
+            <div className="operator-header">
+                <div className="operator-verified-badge">
+                    <FiShield size={14} />
+                    <span>{t('operator.verified')}</span>
+                </div>
+                <div className="operator-rating">
+                    <FiStar size={14} />
+                    <span>{t('operator.experience')}</span>
+                </div>
+            </div>
 
-            <div className="d-flex align-items-start gap-4 flex-wrap">
-                {/* Photo */}
-                <div className="flex-shrink-0">
+            {/* Profile Section */}
+            <div className="operator-profile">
+                <div className="operator-avatar-wrapper">
                     {operator.photoUrl ? (
                         operator.photoUrl.includes('/preview') ? (
-                            <iframe src={operator.photoUrl} title={operator.name} className="operator-photo" style={{ border: 'none', pointerEvents: 'none', overflow: 'hidden' }} />
+                            <iframe src={operator.photoUrl} title={operator.name} className="operator-avatar-img" style={{ border: 'none', pointerEvents: 'none' }} />
                         ) : (
-                            <img src={operator.photoUrl} alt={operator.name} className="operator-photo"
+                            <img src={operator.photoUrl} alt={operator.name} className="operator-avatar-img"
                                 onError={(e) => {
                                     e.target.style.display = 'none';
                                     e.target.nextSibling.style.display = 'flex';
                                 }} />
                         )
                     ) : null}
-                    <div className="operator-photo-placeholder" style={{ display: operator.photoUrl ? 'none' : 'flex' }}>
+                    <div className="operator-avatar-placeholder" style={{ display: operator.photoUrl ? 'none' : 'flex' }}>
                         {initials || <FiUser />}
                     </div>
+                    <div className="operator-online-dot" />
                 </div>
-
-                {/* Info */}
-                <div className="flex-grow-1">
-                    <h3 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: 4 }}>{operator.name}</h3>
+                <div className="operator-info">
+                    <h3 className="operator-name">{operator.name}</h3>
                     {operator.age && (
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: 16 }}>
-                            {t('operator.age')}: {operator.age} years
-                        </p>
+                        <span className="operator-age">{t('operator.age')}: {operator.age} years</span>
                     )}
                     {operator.bio && (
-                        <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: 16, lineHeight: 1.5 }}>
-                            {operator.bio}
-                        </p>
+                        <p className="operator-bio">{operator.bio}</p>
                     )}
-
-                    <div className="operator-contact-item">
-                        <div className="contact-icon icon-phone"><FiPhone /></div>
-                        <div>
-                            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('operator.call')}</div>
-                            <a href={`tel:${operator.phone}`} style={{ color: 'var(--text-dark)', fontWeight: 600, textDecoration: 'none', fontSize: '0.95rem' }}>
-                                {operator.phone}
-                            </a>
-                        </div>
-                    </div>
-
-                    {operator.email && (
-                        <div className="operator-contact-item">
-                            <div className="contact-icon icon-email"><FiMail /></div>
-                            <div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('operator.email')}</div>
-                                <a href={`mailto:${operator.email}`} style={{ color: 'var(--text-dark)', fontWeight: 600, textDecoration: 'none', fontSize: '0.95rem' }}>
-                                    {operator.email}
-                                </a>
-                            </div>
-                        </div>
-                    )}
-
-                    {operator.address && (
-                        <div className="operator-contact-item">
-                            <div className="contact-icon icon-address"><FiMapPin /></div>
-                            <div>
-                                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{t('operator.address')}</div>
-                                <span style={{ color: 'var(--text-dark)', fontWeight: 500, fontSize: '0.95rem' }}>{operator.address}</span>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="d-flex gap-3 mt-4 flex-wrap">
-                        {(operator.whatsapp || operator.phone) && (
-                            <a
-                                href={`https://wa.me/${(operator.whatsapp || operator.phone).replace(/\D/g, '')}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="btn-whatsapp"
-                            >
-                                <FaWhatsapp size={18} />
-                                {t('operator.whatsapp')}
-                            </a>
-                        )}
-                        <a href={`tel:${operator.phone}`} className="btn-call">
-                            <FiPhone />
-                            {t('operator.call')}
-                        </a>
-                    </div>
-
-                    {/* WhatsApp Group Link */}
-                    <div className="mt-4 pt-4 border-top">
-                        <a
-                            href="https://chat.whatsapp.com/FZEX4SFVBbL8iDlpQcchbJ?mode=gi_t"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="btn-whatsapp w-100 justify-content-center py-2"
-                            style={{ background: 'linear-gradient(135deg, #25ba61, #075e54)' }}
-                        >
-                            <FaUsers size={20} />
-                            {t('operator.joinGroup')}
-                        </a>
-                    </div>
-
-                    {/* Promotional Attraction Points */}
-                    <div className="promo-attraction-box mt-4 p-3 rounded" style={{ background: 'linear-gradient(135deg, rgba(0, 180, 216, 0.08), rgba(124, 58, 237, 0.08))', borderLeft: '4px solid var(--accent-blue)' }}>
-                        <div className="d-flex flex-column gap-3">
-                            <div style={{ fontSize: '0.88rem', fontWeight: 600, color: 'var(--text-dark)' }}>
-                                {t('operator.promoHome')}
-                            </div>
-                            <div style={{ fontSize: '0.88rem', fontWeight: 500, color: 'var(--text-muted)' }}>
-                                {t('operator.promoTravel')}
-                            </div>
-                            <div style={{ fontSize: '0.88rem', fontWeight: 800, color: 'var(--accent-violet)' }}>
-                                {t('operator.promoFast')}
-                            </div>
-                            <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#16a34a' }}>
-                                {t('operator.promoPay')}
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
+
+            {/* Contact Details */}
+            <div className="operator-contacts">
+                <div className="operator-contact-row">
+                    <div className="contact-icon icon-phone"><FiPhone size={16} /></div>
+                    <div className="contact-detail">
+                        <span className="contact-label">{t('operator.call')}</span>
+                        <a href={`tel:${operator.phone}`} className="contact-value">{operator.phone}</a>
+                    </div>
+                </div>
+
+                {operator.email && (
+                    <div className="operator-contact-row">
+                        <div className="contact-icon icon-email"><FiMail size={16} /></div>
+                        <div className="contact-detail">
+                            <span className="contact-label">{t('operator.email')}</span>
+                            <a href={`mailto:${operator.email}`} className="contact-value">{operator.email}</a>
+                        </div>
+                    </div>
+                )}
+
+                {operator.address && (
+                    <div className="operator-contact-row">
+                        <div className="contact-icon icon-address"><FiMapPin size={16} /></div>
+                        <div className="contact-detail">
+                            <span className="contact-label">{t('operator.address')}</span>
+                            <span className="contact-value">{operator.address}</span>
+                        </div>
+                    </div>
+                )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="operator-actions">
+                {waNumber && (
+                    <a href={`https://wa.me/${waNumber}`}
+                        target="_blank" rel="noopener noreferrer"
+                        className="btn-whatsapp-v2">
+                        <FaWhatsapp size={20} />
+                        <span>{t('operator.whatsapp')}</span>
+                    </a>
+                )}
+                <a href={`tel:${operator.phone}`} className="btn-call-v2">
+                    <FiPhone size={18} />
+                    <span>{t('operator.call')}</span>
+                </a>
+            </div>
+
+            {/* WhatsApp Group Link - DYNAMIC from operator data */}
+            {operator.whatsappGroupLink && (
+                <div className="operator-group-link">
+                    <a href={operator.whatsappGroupLink}
+                        target="_blank" rel="noopener noreferrer"
+                        className="btn-group-join">
+                        <FaUsers size={18} />
+                        <span>{t('operator.joinGroup')}</span>
+                        <span className="group-arrow">→</span>
+                    </a>
+                </div>
+            )}
+
+            {/* Why Choose Us */}
+            {!compact && (
+                <div className="operator-promo">
+                    <h5 className="promo-title">{t('operator.whyChooseUs')}</h5>
+                    <div className="promo-items">
+                        <div className="promo-item">{t('operator.promoHome')}</div>
+                        <div className="promo-item">{t('operator.promoTravel')}</div>
+                        <div className="promo-item promo-highlight">{t('operator.promoFast')}</div>
+                        <div className="promo-item promo-success">{t('operator.promoPay')}</div>
+                    </div>
+                </div>
+            )}
+
+            {/* Service Guarantee */}
+            {!compact && (
+                <div className="operator-guarantee">
+                    <div className="guarantee-icon">🛡️</div>
+                    <div>
+                        <strong>{t('operator.serviceGuarantee')}</strong>
+                        <p>{t('operator.guaranteeText')}</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

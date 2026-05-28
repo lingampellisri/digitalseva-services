@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import HeroSection from '../components/HeroSection';
+import TrustBadges from '../components/TrustBadges';
+import LiveCounter from '../components/LiveCounter';
+import WhatsNewSidebar from '../components/WhatsNewSidebar';
+import SevaFamilyCard from '../components/SevaFamilyCard';
 import PostCard from '../components/PostCard';
 import Footer from '../components/Footer';
 import API from '../api/client';
@@ -32,6 +36,11 @@ const HomePage = () => {
         }
     };
 
+    const handleHeroSearch = (val) => {
+        setSearch(val);
+        setActiveCategory('all');
+    };
+
     const sortedPosts = [...posts].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     const whatsNew = sortedPosts.slice(0, 4);
 
@@ -45,8 +54,30 @@ const HomePage = () => {
 
     return (
         <>
-            <HeroSection />
+            <HeroSection onSearch={handleHeroSearch} />
 
+            {/* Trust Badges Strip */}
+            <TrustBadges />
+
+            {/* Live Counter */}
+            <LiveCounter />
+
+            {/* What's New Section */}
+            <section className="whats-new-section">
+                <div className="container">
+                    <div className="text-center mb-5">
+                        <h2 className="section-title">{t('whatsNew.sectionTitle', 'Updates & Tools')}</h2>
+                        <div className="section-line mx-auto" />
+                        <p className="section-subtitle mt-2">{t('whatsNew.sectionSub', 'Deadlines, trending services, and latest updates')}</p>
+                    </div>
+                    <WhatsNewSidebar />
+                </div>
+            </section>
+
+            {/* Seva Family Card Banner */}
+            <SevaFamilyCard />
+
+            {/* Posts Section — UNCHANGED from original */}
             <section id="posts-section" style={{ padding: '80px 0', background: 'var(--bg-light)' }}>
                 <div className="container">
                     {/* Section header */}

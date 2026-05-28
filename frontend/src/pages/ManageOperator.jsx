@@ -15,7 +15,7 @@ const convertDriveLink = (url) => {
 
 const EMPTY_FORM = {
     name: '', age: '', phone: '', email: '',
-    address: '', photoUrl: '', whatsapp: '', bio: '',
+    address: '', photoUrl: '', whatsapp: '', whatsappGroupLink: '', bio: '',
     isActive: true, sortOrder: 0
 };
 
@@ -47,6 +47,7 @@ const ManageOperator = ({ operators = [], onRefresh }) => {
             address: op.address || '',
             photoUrl: op.photoUrl || '',
             whatsapp: op.whatsapp || '',
+            whatsappGroupLink: op.whatsappGroupLink || '',
             bio: op.bio || '',
             isActive: op.isActive !== false,
             sortOrder: op.sortOrder || 0,
@@ -191,6 +192,7 @@ const ManageOperator = ({ operators = [], onRefresh }) => {
                             <div className="col-12 col-md-6">{f('age', t('admin.age') + ' (years)', '30', 'number')}</div>
                             <div className="col-12 col-md-6">{f('phone', t('admin.phone') + ' *', '+91 9876543210', 'tel')}</div>
                             <div className="col-12 col-md-6">{f('whatsapp', t('admin.whatsapp'), '+91 9876543210', 'tel')}</div>
+                            <div className="col-12 col-md-6">{f('whatsappGroupLink', t('admin.whatsappGroupLink'), 'https://chat.whatsapp.com/...', 'url')}</div>
                             <div className="col-12 col-md-6">{f('email', t('admin.email'), 'email@example.com', 'email')}</div>
                             <div className="col-12 col-md-6">{f('photoUrl', t('admin.photoUrl'), 'https://example.com/photo.jpg', 'url')}</div>
                             <div className="col-12">{f('address', t('admin.address'), 'Plot 12, Hyderabad, Telangana')}</div>
