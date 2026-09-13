@@ -5,7 +5,8 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { AuthProvider } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
+import OperatorRoute from './components/OperatorRoute';
 
 import Navbar from './components/Navbar';
 import FloatingWhatsApp from './components/FloatingWhatsApp';
@@ -13,6 +14,10 @@ import HomePage from './pages/HomePage';
 import PostDetailPage from './pages/PostDetailPage';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import OperatorLogin from './pages/OperatorLogin';
+import OperatorDashboard from './pages/OperatorDashboard';
+import CustomerRequestsAdmin from './pages/CustomerRequestsAdmin';
+import TrackRequestPage from './pages/TrackRequestPage';
 
 import { useTranslation } from 'react-i18next';
 
@@ -51,17 +56,32 @@ function App() {
             <Router>
                 <FloatingWhatsApp />
                 <Routes>
-                    {/* Admin routes — no Navbar */}
+                    {/* Admin portal routes */}
                     <Route path="/admin/login" element={<AdminLogin />} />
                     <Route path="/admin" element={
-                        <ProtectedRoute>
+                        <AdminRoute>
                             <AdminDashboard />
-                        </ProtectedRoute>
+                        </AdminRoute>
+                    } />
+                    <Route path="/admin/requests" element={
+                        <AdminRoute>
+                            <CustomerRequestsAdmin />
+                        </AdminRoute>
                     } />
 
-                    {/* Public routes — with Navbar */}
+                    {/* Operator portal routes */}
+                    <Route path="/operator/login" element={<OperatorLogin />} />
+                    <Route path="/operator" element={
+                        <OperatorRoute>
+                            <OperatorDashboard />
+                        </OperatorRoute>
+                    } />
+
+                    {/* Public customer-facing routes — with Navbar */}
                     <Route element={<PublicLayout darkMode={darkMode} toggleDarkMode={toggleDarkMode} />}>
                         <Route path="/" element={<HomePage />} />
+                        <Route path="/track" element={<TrackRequestPage />} />
+                        <Route path="/track/:trackingId" element={<TrackRequestPage />} />
                         <Route path="/post/:id" element={<PostDetailPage />} />
                         <Route path="*" element={
                             <div style={{ minHeight: '60vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 16 }}>
