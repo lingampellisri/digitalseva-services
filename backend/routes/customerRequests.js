@@ -5,6 +5,7 @@ const Post = require('../models/Post');
 const Operator = require('../models/Operator');
 const AssignmentCounter = require('../models/AssignmentCounter');
 const { protect, authorize } = require('../middleware/auth');
+const { submissionLimiter, trackingLimiter, escapeRegex } = require('../middleware/security');
 
 // ─── Round-Robin Assignment Helper ───────────────────────────────────────────
 async function assignOperator() {
@@ -32,7 +33,7 @@ async function assignOperator() {
 }
 
 // ─── POST / — Public: Submit application request ────────────────────────────
-router.post('/', async (req, res) => {
+router.post('/', submissionLimiter, async (req, res) => {
     try {
         const { customerName, customerPhone, customerAge, customerEmail, customerMessage, postId } = req.body;
 
@@ -139,11 +140,12 @@ router.get('/', protect, authorize('admin'), async (req, res) => {
         if (assignedTo) filter.assignedTo = assignedTo;
         if (category) filter.serviceCategory = category;
         if (search) {
+            const safeSearch = escapeRegex(search);
             filter.$or = [
-                { trackingId: { $regex: search, $options: 'i' } },
-                { customerName: { $regex: search, $options: 'i' } },
-                { customerPhone: { $regex: search, $options: 'i' } },
-                { serviceName: { $regex: search, $options: 'i' } }
+                { trackingId: { $regex: safeSearch, $options: 'i' } },
+                { customerName: { $regex: safeSearch, $options: 'i' } },
+                { customerPhone: { $regex: safeSearch, $options: 'i' } },
+                { serviceName: { $regex: safeSearch, $options: 'i' } }
             ];
         }
 
@@ -183,11 +185,12 @@ router.get('/mine', protect, authorize('operator'), async (req, res) => {
 
         if (status) filter.status = status;
         if (search) {
+            const safeSearch = escapeRegex(search);
             filter.$or = [
-                { trackingId: { $regex: search, $options: 'i' } },
-                { customerName: { $regex: search, $options: 'i' } },
-                { customerPhone: { $regex: search, $options: 'i' } },
-                { serviceName: { $regex: search, $options: 'i' } }
+                { trackingId: { $regex: safeSearch, $options: 'i' } },
+                { customerName: { $regex: safeSearch, $options: 'i' } },
+                { customerPhone: { $regex: safeSearch, $options: 'i' } },
+                { serviceName: { $regex: safeSearch, $options: 'i' } }
             ];
         }
 
@@ -293,7 +296,7 @@ function getStatusTitle(status) {
 }
 
 // ─── GET /track/:query — Public: Track request strictly by trackingId ────────────
-router.get('/track/:query', async (req, res) => {
+router.get('/track/:query', trackingLimiter, async (req, res) => {
     try {
         const queryParam = (req.params.query || '').trim();
         if (!queryParam) {
@@ -308,8 +311,9 @@ router.get('/track/:query', async (req, res) => {
             });
         }
 
+        const safeQuery = escapeRegex(queryParam);
         const requests = await CustomerRequest.find({
-            trackingId: { $regex: new RegExp(`^${queryParam}$`, 'i') }
+            trackingId: { $regex: new RegExp(`^${safeQuery}$`, 'i') }
         })
             .select('trackingId customerName serviceName serviceCategory status priority statusHistory operatorMessage createdAt completedAt assignedTo')
             .populate('assignedTo', 'name phone whatsapp')

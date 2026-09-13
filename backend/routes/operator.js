@@ -3,10 +3,12 @@ const router = express.Router();
 const Operator = require('../models/Operator');
 const { protect, authorize } = require('../middleware/auth');
 
-// @route GET /api/operators  — public (all active operators, sorted)
+// @route GET /api/operators  — public (limited display fields for privacy)
 router.get('/', async (req, res) => {
     try {
-        const operators = await Operator.find({ isActive: { $ne: false } }).sort({ sortOrder: 1, createdAt: -1 });
+        const operators = await Operator.find({ isActive: { $ne: false } })
+            .select('name photoUrl bio whatsapp whatsappGroupLink sortOrder')
+            .sort({ sortOrder: 1, createdAt: -1 });
         res.json(operators);
     } catch (err) {
         res.status(500).json({ message: err.message });
