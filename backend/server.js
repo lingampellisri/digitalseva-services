@@ -6,6 +6,8 @@ const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth');
 const postRoutes = require('./routes/posts');
 const operatorRoutes = require('./routes/operator');
+const customerRequestRoutes = require('./routes/customerRequests');
+const adRoutes = require('./routes/ads');
 
 connectDB();
 
@@ -50,6 +52,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/operators', operatorRoutes);
+app.use('/api/customer-requests', customerRequestRoutes);
+app.use('/api/ads', adRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => res.json({ status: 'ok', message: 'ANTIGRAVITY API running' }));

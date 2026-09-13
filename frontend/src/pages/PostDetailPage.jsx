@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import OperatorCard from '../components/OperatorCard';
+import CustomerApplicationForm from '../components/CustomerApplicationForm';
+import MarketingAd from '../components/MarketingAd';
 import Footer from '../components/Footer';
 import API from '../api/client';
 import { FiCalendar, FiArrowLeft, FiClock, FiExternalLink } from 'react-icons/fi';
@@ -34,6 +36,7 @@ const PostDetailPage = () => {
     const lang = i18n.language;
     const [post, setPost] = useState(null);
     const [operator, setOperator] = useState(null);
+    const [ads, setAds] = useState([]);
     const [loading, setLoading] = useState(true);
     const [timeLeft, setTimeLeft] = useState(null);
 
@@ -53,14 +56,16 @@ const PostDetailPage = () => {
     const fetchData = async () => {
         try {
             setLoading(true);
-            const [postRes, opRes] = await Promise.all([
+            const [postRes, opRes, adsRes] = await Promise.all([
                 API.get(`/posts/${id}`),
-                API.get('/operators')
+                API.get('/operators'),
+                API.get('/ads?placement=post_details').catch(() => ({ data: [] }))
             ]);
             setPost(postRes.data);
             const ops = Array.isArray(opRes.data) ? opRes.data : [];
             // Use the first active operator (sorted by sortOrder from backend)
             setOperator(ops.length > 0 ? ops[0] : null);
+            setAds(Array.isArray(adsRes.data) ? adsRes.data : []);
         } catch (err) {
             console.error(err);
         } finally {
@@ -223,7 +228,7 @@ const PostDetailPage = () => {
 
                             {/* Extra Info */}
                             {extraInfo && (
-                                <div className="detail-card">
+                                <div className="detail-card mb-4">
                                     <h3 className="detail-section-title">
                                         <span className="section-icon">ℹ️</span>
                                         {t('detail.extraInfo')}
@@ -233,9 +238,26 @@ const PostDetailPage = () => {
                                     </div>
                                 </div>
                             )}
+
+                            {/* Post-Specific Marketing Ad from DB (Image/SVG, Video, PDF, GIF, Doc) */}
+                            {post.adMediaUrl && (
+                                <div className="mb-4">
+                                    <MarketingAd
+                                        ad={{
+                                            title: post.adTitle || `${title} — Special Assistance & Marketing`,
+                                            mediaUrl: post.adMediaUrl,
+                                            mediaType: post.adMediaType || 'auto',
+                                            linkUrl: post.adLinkUrl,
+                                            description: post.adDescription,
+                                            badge: post.adBadge || 'Featured Promotion'
+                                        }}
+                                        variant="card"
+                                    />
+                                </div>
+                            )}
                         </div>
 
-                        {/* Right Column - Operator */}
+                        {/* Right Column - Operator + Apply Form + Sidebar Marketing Ad */}
                         <div className="col-12 col-lg-4">
                             <div className="detail-sidebar">
                                 {operator ? (
@@ -244,6 +266,24 @@ const PostDetailPage = () => {
                                     <div className="detail-card" style={{ textAlign: 'center', padding: 32 }}>
                                         <div style={{ fontSize: '3rem', marginBottom: 12, opacity: 0.3 }}>👤</div>
                                         <p style={{ color: 'var(--text-muted)' }}>No operators available at this time.</p>
+                                    </div>
+                                )}
+
+                                {/* Customer Application Form — only for active posts */}
+                                {active && (
+                                    <div style={{ marginTop: 20 }}>
+                                        <CustomerApplicationForm
+                                            postId={post._id}
+                                            serviceName={title}
+                                            serviceCategory={post.category}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* General / Category Marketing Ads from DB */}
+                                {ads && ads.length > 0 && (
+                                    <div style={{ marginTop: 24 }}>
+                                        <MarketingAd ad={ads[0]} variant="sidebar" />
                                     </div>
                                 )}
                             </div>

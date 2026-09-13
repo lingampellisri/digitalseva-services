@@ -9,12 +9,17 @@ import {
 } from 'react-icons/fi';
 import PostForm from './PostForm';
 import ManageOperator from './ManageOperator';
+import CustomerRequestsAdmin from './CustomerRequestsAdmin';
+import ManageAds from './ManageAds';
+import { FiMessageSquare, FiVolume2, FiInbox } from 'react-icons/fi';
 
 const VIEWS = {
     DASHBOARD: 'dashboard',
+    REQUESTS: 'requests',
+    MANAGE_ADS: 'manage_ads',
+    MANAGE_OPERATOR: 'manage_operator',
     ADD_POST: 'add_post',
     EDIT_POST: 'edit_post',
-    MANAGE_OPERATOR: 'manage_operator',
 };
 
 const AdminDashboard = () => {
@@ -54,9 +59,11 @@ const AdminDashboard = () => {
     const handleLogout = () => { logout(); navigate('/'); };
 
     const navItems = [
-        { key: VIEWS.DASHBOARD, icon: <FiGrid />, label: t('admin.dashboard') },
-        { key: VIEWS.ADD_POST, icon: <FiPlus />, label: t('admin.addPost') },
-        { key: VIEWS.MANAGE_OPERATOR, icon: <FiUser />, label: t('admin.manageOperator') },
+        { key: VIEWS.DASHBOARD, icon: <FiGrid />, label: t('admin.dashboard', 'Dashboard') },
+        { key: VIEWS.REQUESTS, icon: <FiInbox />, label: 'Customer Requests' },
+        { key: VIEWS.MANAGE_ADS, icon: <FiVolume2 />, label: 'Marketing & Ads' },
+        { key: VIEWS.MANAGE_OPERATOR, icon: <FiUser />, label: t('admin.manageOperator', 'Manage Operators') },
+        { key: VIEWS.ADD_POST, icon: <FiPlus />, label: t('admin.addPost', 'Add Post') },
     ];
 
     const fmt = (d) => new Date(d).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
@@ -219,6 +226,14 @@ const AdminDashboard = () => {
                             onSuccess={() => { fetchData(); setView(VIEWS.DASHBOARD); setEditPost(null); }}
                             onCancel={() => { setView(VIEWS.DASHBOARD); setEditPost(null); }}
                         />
+                    )}
+
+                    {view === VIEWS.REQUESTS && (
+                        <CustomerRequestsAdmin />
+                    )}
+
+                    {view === VIEWS.MANAGE_ADS && (
+                        <ManageAds />
                     )}
 
                     {view === VIEWS.MANAGE_OPERATOR && (
