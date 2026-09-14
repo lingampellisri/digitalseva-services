@@ -48,42 +48,36 @@
 
 ## 2. Status Lifecycle
 
-```
-                    ┌─────────┐
-                    │ PENDING │  (form submitted, before assignment)
-                    └────┬────┘
-                         │ Auto-assign to operator
-                    ┌────▼────┐
-                    │ASSIGNED │  (operator can see in queue)
-                    └────┬────┘
-                         │ Operator starts working
-                    ┌────▼────────┐
-                    │ IN_PROGRESS │  (documents being verified)
-                    └────┬────────┘
-                         │ Operator calls/messages customer
-                    ┌────▼──────┐
-                    │ CONTACTED │  (customer has been reached)
-                    └────┬──────┘
-                         │
-                ┌────────┼────────┐
-                ▼        ▼        ▼
-          ┌──────────┐ ┌────────┐ ┌──────────┐
-          │COMPLETED │ │REJECTED│ │CANCELLED │
-          │  ✅      │ │  ❌    │ │  🚫      │
-          └──────────┘ └────────┘ └──────────┘
+```mermaid
+flowchart TD
+    SUB["📝 SUBMITTED\n(Application received & logged)"] --> ASS["📨 ASSIGNED\n(Auto round-robin routing)"]
+    ASS --> REV["🔍 UNDER_REVIEW\n(Doc verification & eligibility)"]
+    REV --> PROG["🔄 IN_PROGRESS\n(Portal submission & processing)"]
+    PROG --> COMP["✅ COMPLETED\n(Delivered & ack issued)"]
+    
+    REV -.-> ACT["⚠️ ACTION_REQUIRED\n(Citizen clarification needed)"]
+    ACT -.-> REV
+    PROG -.-> ACT
+    
+    REV --> REJ["❌ REJECTED\n(Ineligible with reason)"]
+    PROG --> REJ
+    ASS --> CANC["🚫 CANCELLED\n(Cancelled by applicant)"]
 ```
 
 ### Status Descriptions
 
-| Status        | Who Sets It | Description                                    |
-|---------------|-------------|------------------------------------------------|
-| `pending`     | System      | Request just submitted, assignment in progress |
-| `assigned`    | System      | Auto-assigned to an operator                   |
-| `in_progress` | Operator    | Operator is actively working on request        |
-| `contacted`   | Operator    | Operator has contacted the customer             |
-| `completed`   | Operator    | Service successfully delivered                 |
-| `rejected`    | Operator    | Request cannot be fulfilled (reason required)  |
-| `cancelled`   | Admin       | Admin cancelled the request                    |
+| Status | Who Sets It | Citizen Facing Title | Description |
+|---|---|---|---|
+| `submitted` | System | Application Submitted | Request submitted via public form; Tracking ID generated |
+| `assigned` | System / Admin | Assigned to Officer | Auto-assigned via round-robin to operator |
+| `under_review` | Operator | Under Review & Verification | Operator verifies customer credentials and documents |
+| `in_progress` | Operator | In Process | Request is actively being filed on government/provider portal |
+| `action_required`| Operator | Action Required | Additional document or citizen clarification requested |
+| `completed` | Operator | Service Completed & Delivered | Work fulfilled; receipts/acknowledgement delivered |
+| `rejected` | Operator | Application Rejected | Request cannot be fulfilled; reason documented in audit trail |
+| `cancelled` | Admin | Cancelled by Applicant | Request cancelled upon applicant request |
+
+> For comprehensive lifecycle architecture and citizen tracking documentation, see [10-LIFECYCLE-MANAGEMENT-AND-TRACKING.md](file:///c:/Users/DELL/Desktop/Learn/Online-service-reactApp/docs/10-LIFECYCLE-MANAGEMENT-AND-TRACKING.md).
 
 ---
 
