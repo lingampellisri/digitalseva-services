@@ -23,7 +23,9 @@ const OperatorLogin = () => {
                 id: res.data.operatorId,
                 role: 'operator',
                 operatorId: res.data.operatorId,
-                name: res.data.name
+                name: res.data.name,
+                operatorRole: res.data.operatorRole || 'operator',
+                permissions: res.data.permissions || {}
             });
             navigate('/operator');
         } catch (err) {
