@@ -25,7 +25,25 @@ export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(() => {
         try {
             const stored = localStorage.getItem('ag_user');
-            return stored ? JSON.parse(stored) : null;
+            let parsed = stored ? JSON.parse(stored) : null;
+            const token = localStorage.getItem('ag_token');
+
+            // If user exists in storage, ensure permissions and operatorRole are populated
+            if (parsed && token) {
+                try {
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    if (payload.role === 'operator') {
+                        if (!parsed.permissions || Object.keys(parsed.permissions).length === 0) {
+                            parsed.permissions = payload.permissions || {};
+                        }
+                        if (!parsed.operatorRole && payload.operatorRole) {
+                            parsed.operatorRole = payload.operatorRole;
+                        }
+                        localStorage.setItem('ag_user', JSON.stringify(parsed));
+                    }
+                } catch (e) {}
+            }
+            return parsed;
         } catch { return null; }
     });
 
@@ -38,11 +56,39 @@ export const AuthProvider = ({ children }) => {
     const isSeniorOperator = isAdmin || operatorRole === 'senior_operator';
     const isTraineeOperator = operatorRole === 'trainee_operator';
 
-    const hasPermission = (permissionName) => {
+    const hasPermission = useCallback((permissionName) => {
         if (!user) return false;
-        if (isAdmin) return true; // Admin has all permissions
-        return !!user?.permissions?.[permissionName];
-    };
+        if (user.role === 'admin') return true; // Admin has all permissions
+        const opRole = user.operatorRole || user.role;
+        if (opRole === 'senior_operator') return true; // Senior lead operator has all permissions
+
+        // Check explicit permission from user.permissions object
+        if (user.permissions && user.permissions[permissionName] !== undefined) {
+            return Boolean(user.permissions[permissionName]);
+        }
+
+        // Standard operator defaults if permission key is undefined
+        if (permissionName === 'canUpdateStatus' || permissionName === 'canAddNotes' || permissionName === 'canEditProfile') {
+            return true;
+        }
+
+        return false;
+    }, [user]);
+
+    const updatePermissions = useCallback((newPermissions, newRole) => {
+        setUser(prev => {
+            if (!prev) return prev;
+            const updated = {
+                ...prev,
+                permissions: { ...prev.permissions, ...(newPermissions || {}) },
+                operatorRole: newRole || prev.operatorRole
+            };
+            try {
+                localStorage.setItem('ag_user', JSON.stringify(updated));
+            } catch (e) {}
+            return updated;
+        });
+    }, []);
 
     // ─── Logout Function ────────────────────────────────────────────────────
     const logout = useCallback(() => {
@@ -128,23 +174,22 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('ag_token', newToken);
         setToken(newToken);
 
-        // Extract role and permission details
-        let userInfo = userData;
-        if (!userInfo) {
-            try {
-                const payload = JSON.parse(atob(newToken.split('.')[1]));
-                userInfo = {
-                    id: payload.id,
-                    role: payload.role || 'admin',
-                    operatorRole: payload.operatorRole || payload.role || 'operator',
-                    permissions: payload.permissions || {},
-                    operatorId: payload.operatorId || null,
-                    name: payload.name || ''
-                };
-            } catch {
-                userInfo = { id: null, role: 'admin' };
-            }
-        }
+        let tokenPayload = {};
+        try {
+            tokenPayload = JSON.parse(atob(newToken.split('.')[1]));
+        } catch {}
+
+        const userInfo = {
+            id: userData?.id || tokenPayload.id,
+            role: userData?.role || tokenPayload.role || 'admin',
+            operatorRole: userData?.operatorRole || tokenPayload.operatorRole || tokenPayload.role || 'operator',
+            permissions: userData?.permissions && Object.keys(userData.permissions).length > 0
+                ? userData.permissions
+                : (tokenPayload.permissions || {}),
+            operatorId: userData?.operatorId || tokenPayload.operatorId || tokenPayload.id || null,
+            name: userData?.name || tokenPayload.name || ''
+        };
+
         localStorage.setItem('ag_user', JSON.stringify(userInfo));
         setUser(userInfo);
     };
@@ -159,6 +204,7 @@ export const AuthProvider = ({ children }) => {
             isSeniorOperator,
             isTraineeOperator,
             hasPermission,
+            updatePermissions,
             login,
             logout
         }}>

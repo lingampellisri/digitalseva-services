@@ -29,7 +29,7 @@ const STATUS_FILTERS = [
 
 const OperatorDashboard = () => {
     const { t } = useTranslation();
-    const { user, logout, hasPermission, isSeniorOperator, operatorRole } = useAuth();
+    const { user, logout, hasPermission, isSeniorOperator, operatorRole, updatePermissions } = useAuth();
     const navigate = useNavigate();
     const [view, setView] = useState(VIEWS.DASHBOARD);
     const [requests, setRequests] = useState([]);
@@ -71,8 +71,9 @@ const OperatorDashboard = () => {
 
     const handleExportCSV = () => {
         if (!requests.length) return;
-        const headers = ['Request ID', 'Customer Name', 'Phone', 'Email', 'Age', 'Service', 'Category', 'Status', 'Date'];
+        const headers = ['Tracking ID', 'Request ID', 'Customer Name', 'Phone', 'Email', 'Age', 'Service', 'Category', 'Status', 'Date'];
         const rows = requests.map(r => [
+            `"${r.trackingId || ''}"`,
             r._id,
             `"${r.customerName || ''}"`,
             r.customerPhone || '',
@@ -95,14 +96,19 @@ const OperatorDashboard = () => {
 
     const fetchProfile = async () => {
         try {
-            const res = await API.get(`/operators/${user.operatorId || user.id}`);
+            const opId = user?.operatorId || user?.id;
+            if (!opId) return;
+            const res = await API.get(`/operators/${opId}`);
             setProfile(res.data);
+            if (res.data?.permissions && updatePermissions) {
+                updatePermissions(res.data.permissions, res.data.role);
+            }
         } catch (e) { console.error(e); }
     };
 
     useEffect(() => {
-        if (view === VIEWS.PROFILE && !profile) fetchProfile();
-    }, [view]);
+        fetchProfile();
+    }, [user?.operatorId, user?.id]);
 
     const handleLogout = () => { logout(); navigate('/'); };
 
@@ -159,7 +165,7 @@ const OperatorDashboard = () => {
                             {navItems.find(i => i.key === view)?.label || 'Dashboard'}
                         </h5>
                     </div>
-                    <div className="d-flex align-items-center gap-2">
+                    <div className="d-flex align-items-center gap-2 flex-wrap">
                         <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                             Welcome, <strong>{user?.name || 'Operator'}</strong>
                         </span>
@@ -169,6 +175,14 @@ const OperatorDashboard = () => {
                             color: operatorRole === 'senior_operator' ? '#d97706' : operatorRole === 'trainee_operator' ? '#6366f1' : '#059669'
                         }}>
                             {operatorRole === 'senior_operator' ? '🌟 Senior Lead' : operatorRole === 'trainee_operator' ? '🔰 Trainee' : '🛡️ Standard Operator'}
+                        </span>
+                        <span style={{
+                            fontSize: '0.68rem', fontWeight: 600, padding: '2px 8px', borderRadius: 6,
+                            background: canUpdateStatus ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                            color: canUpdateStatus ? '#10b981' : '#ef4444',
+                            border: `1px solid ${canUpdateStatus ? 'rgba(16, 185, 129, 0.25)' : 'rgba(239, 68, 68, 0.25)'}`
+                        }}>
+                            {canUpdateStatus ? '✅ Status Updates Enabled' : '🔒 Status Updates Locked'}
                         </span>
                     </div>
                 </div>
