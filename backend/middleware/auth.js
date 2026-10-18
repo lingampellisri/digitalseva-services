@@ -13,12 +13,30 @@ const protect = async (req, res, next) => {
     }
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        let permissions = decoded.permissions || {};
+        let operatorRole = decoded.operatorRole || (decoded.role === 'admin' ? 'admin' : 'operator');
+
+        if (decoded.role === 'operator' && (decoded.operatorId || decoded.id)) {
+            try {
+                const op = await Operator.findById(decoded.operatorId || decoded.id).select('role permissions isActive');
+                if (op) {
+                    if (!op.isActive) {
+                        return res.status(403).json({ message: 'Account is deactivated. Contact admin.' });
+                    }
+                    if (op.permissions) permissions = op.permissions;
+                    if (op.role) operatorRole = op.role;
+                }
+            } catch (dbErr) {
+                // Fallback to token payload if DB lookup encounters an issue
+            }
+        }
+
         req.user = {
             id: decoded.id,
             role: decoded.role || 'admin',
-            operatorRole: decoded.operatorRole || (decoded.role === 'admin' ? 'admin' : 'operator'),
-            permissions: decoded.permissions || {},
-            operatorId: decoded.operatorId || null
+            operatorRole,
+            permissions,
+            operatorId: decoded.operatorId || decoded.id
         };
         next();
     } catch (error) {
